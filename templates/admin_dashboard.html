@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="flex justify-between items-center border-b border-stone-200 pb-4 mb-8">
+    <div>
+        <h2 class="text-3xl font-serif font-bold text-stone-900">Administrative Dashboard</h2>
+        <p class="text-stone-500 text-sm">System Workspace Controls</p>
+    </div>
+    <a href="{{ url_for('admin_logout') }}" class="bg-rose-50 text-rose-700 font-semibold px-4 py-2 rounded-lg hover:bg-rose-100 transition">
+        Exit Workspace
+    </a>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 h-fit">
+        <h3 class="text-lg font-bold font-serif text-stone-900 mb-4 border-b pb-2"> Register New Food</h3>
+        <form action="{{ url_for('web_add_food') }}" method="POST" class="space-y-3">
+            <div>
+                <label class="block text-xs font-bold text-stone-600 mb-1">Food ID (S_no)</label>
+                <input type="number" name="s_no" required class="w-full text-sm px-3 py-1.5 border rounded">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-stone-600 mb-1">Food Name</label>
+                <input type="text" name="name" required class="w-full text-sm px-3 py-1.5 border rounded">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-stone-600 mb-1">Price (₹)</label>
+                <input type="number" name="price" required class="w-full text-sm px-3 py-1.5 border rounded">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-stone-600 mb-1">Category / Cuisine</label>
+                <input type="text" name="category" placeholder="e.g. Italian, Indian" required class="w-full text-sm px-3 py-1.5 border rounded">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-stone-600 mb-1">Description</label>
+                <input type="text" name="description" placeholder="Short text..." class="w-full text-sm px-3 py-1.5 border rounded">
+            </div>
+            <div class="flex items-center gap-2 pt-1">
+                <input type="checkbox" name="is_veg" id="is_veg_box" value="1" class="rounded border-stone-300">
+                <label for="is_veg_box" class="text-xs font-bold text-stone-700">Mark as Vegetarian</label>
+            </div>
+            <button type="submit" class="w-full bg-emerald-700 text-white text-sm font-semibold py-2 rounded hover:bg-emerald-800 transition mt-2">
+                Save Item to Menu
+            </button>
+        </form>
+    </div>
+
+    <div class="lg:col-span-2 space-y-8">
+        <div class="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
+            <div class="bg-stone-900 text-white px-6 py-3 font-serif font-semibold">
+                Active Orders
+            </div>
+            <div class="overflow-x-auto max-h-64">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-stone-50 border-b text-stone-600 font-semibold">
+                            <th class="p-3">ID</th>
+                            <th class="p-3">Item</th>
+                            <th class="p-3 text-center">Qty</th>
+                            <th class="p-3">Total</th>
+                            <th class="p-3">Delivery Profile</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-stone-100 text-stone-700">
+                        {% for order in orders %}
+                        <tr class="hover:bg-stone-50/50">
+                            <td class="p-3 font-mono font-bold">#{{ order.O_id }}</td>
+                            <td class="p-3 font-medium">{{ order.F_name }}</td>
+                            <td class="p-3 text-center">{{ order.Quantity }}</td>
+                            <td class="p-3 font-bold text-stone-900">₹{{ order.Total }}</td>
+                            <td class="p-3 text-xs leading-normal">
+                                <span class="font-semibold block">📱 {{ order.P_no }}</span>
+                                <span class="text-stone-500">📍 {{ order.Address }}</span>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="5" class="p-6 text-center text-stone-400">No customer orders recorded yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
+            <div class="bg-stone-900 text-white px-6 py-3 font-serif font-semibold">
+                 Active Food Catalog
+            </div>
+            <div class="overflow-x-auto max-h-80">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-stone-50 border-b text-stone-600 font-semibold">
+                            <th class="p-3">ID</th>
+                            <th class="p-3">Dish / Category</th>
+                            <th class="p-3">Modify Profile Details</th>
+                            <th class="p-3 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-stone-100 text-stone-700">
+                        {% for item in items %}
+                        <tr class="hover:bg-stone-50/50">
+                            <td class="p-3 font-mono text-stone-500">#{{ item.S_no }}</td>
+                            <td class="p-3">
+                                <span class="font-bold block text-stone-900">{{ item.Name }}</span>
+                                <span class="text-xs uppercase font-bold text-amber-700 tracking-wide">{{ item.Category }}</span>
+                            </td>
+                            <td class="p-3">
+                                <form action="{{ url_for('web_update_food', item_id=item.S_no) }}" method="POST" class="flex items-center gap-2">
+                                    <input type="text" name="name" value="{{ item.Name }}" class="text-xs px-2 py-1 border rounded w-32 font-medium">
+                                    <input type="number" name="price" value="{{ item.Price }}" class="text-xs px-2 py-1 border rounded w-16 font-bold">
+                                    <button type="submit" class="bg-stone-200 hover:bg-stone-300 text-stone-700 text-xs px-2 py-1 rounded font-medium">Update</button>
+                                </form>
+                            </td>
+                            <td class="p-3 text-center">
+                                <a href="{{ url_for('web_delete_food', item_id=item.S_no) }}" onclick="return confirm('Remove item permanently?');" class="text-rose-600 hover:text-rose-900 text-xs font-bold underline">
+                                    Remove
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

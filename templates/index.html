@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-4xl mx-auto my-8">
+    <div class="text-center py-20 bg-white rounded-2xl shadow-sm border border-slate-100 px-8">
+        <span class="text-[#f3af3d] font-mono tracking-widest text-xs uppercase block mb-3 font-bold">In-Room & Lounge Dining</span>
+        <h1 class="text-5xl font-serif font-black text-slate-950 mb-6 tracking-tight">Hotel Miami Portal</h1>
+        <p class="text-slate-600 max-w-xl mx-auto text-base mb-12 leading-relaxed">
+            Welcome to your digital concierge. Experience curated fine-dining, check active service logs, or submit culinary feedback seamlessly.
+        </p>
+        
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="{{ url_for('menu') }}" class="bg-slate-950 text-white font-semibold text-sm tracking-wide px-8 py-4 rounded-lg shadow-md hover:bg-slate-900 transition transform hover:-translate-y-0.5">
+                BROWSE CULINARY MENU
+            </a>
+            <a href="{{ url_for('order_status') }}" class="bg-slate-100 text-slate-800 font-semibold text-sm tracking-wide px-8 py-4 rounded-lg border border-slate-200 hover:bg-slate-200 transition">
+                TRACK / CANCEL ORDERS
+            </a>
+            <a href="{{ url_for('feedback') }}" class="bg-[#f3af3d] text-white font-bold text-sm tracking-wide px-8 py-4 rounded-lg hover:bg-[#d9962b] transition shadow-sm">
+                SUBMIT SERVICE REVIEW
+            </a>
+        </div>
+    </div>
+
+    <div class="text-center max-w-3xl mx-auto mt-20 px-6 py-10 border-t border-slate-200/60 relative">
+        <span class="absolute -top-7 left-1/2 -translate-x-1/2 bg-stone-50 px-6 text-5xl font-serif text-[#f3af3d] select-none"></span>
+        
+        <p class="font-serif italic text-xl text-[#f3af3d] leading-relaxed tracking-wide max-w-2xl mx-auto pt-2">
+            "Culinary design is the ultimate expression of architecture—where precise structure harmonizes with global inspiration to redefine taste."
+        </p>
+        
+        <div class="mt-6 flex items-center justify-center gap-4">
+            <div class="w-8 h-[1px] bg-[#d4c7b2]/30"></div>
+            <span class="font-mono text-[11px] uppercase tracking-[0.25em] text-[#d4c7b2] font-bold">
+                The Kitchen Executive, Hotel Miami
+            </span>
+            <div class="w-8 h-[1px] bg-[#d4c7b2]/30"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

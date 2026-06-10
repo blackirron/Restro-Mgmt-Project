@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-2xl mx-auto my-6">
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 mb-8">
+        <h2 class="text-2xl font-serif font-bold text-stone-900 mb-4">Track Order Status</h2>
+        <form method="POST" class="flex gap-3">
+            <input type="text" name="phone" placeholder="Enter your registered phone No" value="{{ phone or '' }}" required class="flex-grow px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600">
+            <button type="submit" class="bg-stone-800 text-white px-6 py-2 rounded-lg hover:bg-stone-900 transition">Search</button>
+        </form>
+    </div>
+
+    {% if orders %}
+    <div class="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
+        <div class="bg-stone-900 text-white px-6 py-4 flex justify-between items-center">
+            <h3 class="font-serif font-semibold">Your Active Orders Here</h3>
+            <form action="{{ url_for('cancel_order') }}" method="POST" onsubmit="return confirm('Are you absolutely sure you want to cancel all orders for this profile?');">
+                <input type="hidden" name="phone" value="{{ phone }}">
+                <button type="submit" class="bg-rose-700 hover:bg-rose-800 text-xs font-semibold px-3 py-1.5 rounded transition">
+                     Cancel All Orders
+                </button>
+            </form>
+        </div>
+        <div class="divide-y divide-stone-100">
+            {% for order in orders %}
+            <div class="p-6 flex justify-between items-center">
+                <div>
+                    <h4 class="font-bold text-stone-900">{{ order.F_name }}</h4>
+                    <p class="text-sm text-stone-500 mt-1">📍 {{ order.Address }}</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-lg font-bold text-stone-900">₹{{ "%.2f"|format(order.Total) }}</span>
+                    <span class="block text-xs text-emerald-600 font-semibold mt-1">● Out for Delivery</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
