@@ -80,6 +80,10 @@
             </div>
         </div>
 
+        <input type="text" id="foodSearchInput" onkeyup="filterFoodCatalog()" placeholder="Search by dish name or category..." style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px;">
+
+<table id="foodTable" class="...">
+    
         <div class="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
             <div class="bg-stone-900 text-white px-6 py-3 font-serif font-semibold">
                  Active Food Catalog
@@ -116,6 +120,27 @@
                             </td>
                         </tr>
                         {% endfor %}
+
+                        <script>
+function filterFoodCatalog() {
+    let input = document.getElementById("foodSearchInput");
+    let filter = input.value.toUpperCase();
+    let table = document.getElementById("foodTable");
+    let tr = table.getElementsByTagName("tr");
+
+    for (let i = 1; i < tr.length; i++) {
+        let td = tr[i].getElementsByTagName("td")[1]; 
+        if (td) {
+            let txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = ""; 
+            } else {
+                tr[i].style.display = "none"; 
+            }
+        }
+    }
+}
+</script>
                     </tbody>
                 </table>
             </div>
