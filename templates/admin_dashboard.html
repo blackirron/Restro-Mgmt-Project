@@ -58,6 +58,11 @@
                             <th class="p-3 text-center">Qty</th>
                             <th class="p-3">Total</th>
                             <th class="p-3">Delivery Profile</th>
+                            <th> <form action="{{ url_for('complete_order', order_id=order.O_id) }}" method="POST" style="margin: 0;">
+    <button type="submit" style="background-color: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+        Mark Done ✓
+    </button>
+</form></th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-stone-100 text-stone-700">
