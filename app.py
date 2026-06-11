@@ -6,10 +6,11 @@ app.secret_key = 'super_secret_restaurant_key'
 
 def get_db_connection():
     return mysql.connector.connect(
-        host="localhost",
-        user="fooduser",
-        password="food123",
-        database="food"
+        host=os.environ.get("DB_HOST", "localhost"),
+        user=os.environ.get("DB_USER", "fooduser"),
+        password=os.environ.get("DB_PASSWORD", "food123"),
+        database=os.environ.get("DB_NAME", "food"),
+        port=int(os.environ.get("DB_PORT", 3306))
     )
 
 # ─────────────────────────── CUSTOMER CONTROLLERS ───────────────────────────
