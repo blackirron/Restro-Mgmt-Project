@@ -1,16 +1,19 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 import mysql.connector
 
 app = Flask(__name__)
-app.secret_key = 'super_secret_restaurant_key'
+app.secret_key = os.environ.get('SECRET_KEY', 'fallback_development_key')
 
 def get_db_connection():
     return mysql.connector.connect(
-        host=os.environ.get("DB_HOST", "localhost"),
-        user=os.environ.get("DB_USER", "fooduser"),
-        password=os.environ.get("DB_PASSWORD", "food123"),
+        host=os.environ.get("DB_HOST"),
+        user=os.environ.get("DB_USER"),
+        password=os.environ.get("DB_PASSWORD"),
         database=os.environ.get("DB_NAME", "food"),
-        port=int(os.environ.get("DB_PORT", 3306))
+        port=int(os.environ.get("DB_PORT", 4000)), 
+        ssl_verify_cert=True,    
+        ssl_verify_identity=True 
     )
 
 # ─────────────────────────── CUSTOMER CONTROLLERS ───────────────────────────
@@ -122,12 +125,16 @@ def admin_login():
         username = request.form['username']
         password = request.form['password']
         
-        if username == 'admin' and password == 'FoodieIsGreat':
+        # Securely pull the expected admin credentials from Vercel env variables
+        expected_user = os.environ.get('ADMIN_USERNAME', 'admin')
+        expected_pass = os.environ.get('ADMIN_PASSWORD')
+        
+        if expected_pass and username == expected_user and password == expected_pass:
             session['admin_logged_in'] = True
             flash("Access granted. Welcome to Admin Panel.", "success")
             return redirect(url_for('admin_dashboard'))
         else:
-            flash("Wrong Password! Access Denied.", "error")
+            flash("Wrong Username or Password! Access Denied.", "error")
             
     return render_template('admin_login.html')
 
@@ -208,10 +215,18 @@ def web_delete_food(item_id):
 
 @app.route('/remove_order/<int:order_id>', methods=['POST'])
 def remove_order(order_id):
-    global orders
-    orders = [o for o in orders if o['id'] != order_id]
+    if not session.get('admin_logged_in'): return redirect(url_for('admin_login'))
     
-    return redirect('/admin/dashboard')
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    # Safely delete the specific order from the database using its ID
+    cursor.execute("DELETE FROM orders WHERE O_id = %s", (order_id,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    
+    flash("ORDER REMOVED SUCCESSFULLY", "success")
+    return redirect(url_for('admin_dashboard'))
 
 @app.route('/admin/logout')
 def admin_logout():
