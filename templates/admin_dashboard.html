@@ -45,10 +45,9 @@
     </div>
 
     <div class="lg:col-span-2 space-y-8">
+        
         <div class="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
-            <div class="bg-stone-900 text-white px-6 py-3 font-serif font-semibold">
-                Active Orders
-            </div>
+            <div class="bg-stone-900 text-white px-6 py-3 font-serif font-semibold">Active Orders</div>
             <div class="overflow-x-auto max-h-64">
                 <table class="w-full text-left border-collapse text-sm">
                     <thead>
@@ -58,11 +57,7 @@
                             <th class="p-3 text-center">Qty</th>
                             <th class="p-3">Total</th>
                             <th class="p-3">Delivery Profile</th>
-                            <th> <form action="{{ url_for('complete_order', order_id=order.O_id) }}" method="POST" style="margin: 0;">
-    <button type="submit" style="background-color: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
-        Mark Done ✓
-    </button>
-</form></th>
+                            <th class="p-3 text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-stone-100 text-stone-700">
@@ -76,30 +71,32 @@
                                 <span class="font-semibold block">📱 {{ order.P_no }}</span>
                                 <span class="text-stone-500">📍 {{ order.Address }}</span>
                             </td>
+                            <td class="p-3 text-center">
+                                <form action="{{ url_for('complete_order', order_id=order.O_id) }}" method="POST">
+                                    <button type="submit" class="bg-emerald-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-emerald-700">Mark Done ✓</button>
+                                </form>
+                            </td>
                         </tr>
                         {% else %}
-                        <tr><td colspan="5" class="p-6 text-center text-stone-400">No customer orders recorded yet.</td></tr>
+                        <tr><td colspan="6" class="p-6 text-center text-stone-400">No customer orders recorded yet.</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <input type="text" id="foodSearchInput" onkeyup="filterFoodCatalog()" placeholder="Search by dish name or category..." style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px;">
-
-<table id="foodTable" class="...">
-    
         <div class="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
-            <div class="bg-stone-900 text-white px-6 py-3 font-serif font-semibold">
-                 Active Food Catalog
+            <div class="bg-stone-900 text-white px-6 py-3 font-serif font-semibold">Active Food Catalog</div>
+            <div class="p-4">
+                <input type="text" id="foodSearchInput" onkeyup="filterFoodCatalog()" placeholder="Search by dish name or category..." class="w-full p-2 border border-stone-300 rounded text-sm">
             </div>
             <div class="overflow-x-auto max-h-80">
-                <table class="w-full text-left border-collapse text-sm">
+                <table id="foodTable" class="w-full text-left border-collapse text-sm">
                     <thead>
                         <tr class="bg-stone-50 border-b text-stone-600 font-semibold">
                             <th class="p-3">ID</th>
                             <th class="p-3">Dish / Category</th>
-                            <th class="p-3">Modify Profile Details</th>
+                            <th class="p-3">Modify Details</th>
                             <th class="p-3 text-center">Action</th>
                         </tr>
                     </thead>
@@ -113,43 +110,36 @@
                             </td>
                             <td class="p-3">
                                 <form action="{{ url_for('web_update_food', item_id=item.S_no) }}" method="POST" class="flex items-center gap-2">
-                                    <input type="text" name="name" value="{{ item.Name }}" class="text-xs px-2 py-1 border rounded w-32 font-medium">
-                                    <input type="number" name="price" value="{{ item.Price }}" class="text-xs px-2 py-1 border rounded w-16 font-bold">
-                                    <button type="submit" class="bg-stone-200 hover:bg-stone-300 text-stone-700 text-xs px-2 py-1 rounded font-medium">Update</button>
+                                    <input type="text" name="name" value="{{ item.Name }}" class="text-xs px-2 py-1 border rounded w-24">
+                                    <input type="number" name="price" value="{{ item.Price }}" class="text-xs px-2 py-1 border rounded w-16">
+                                    <button type="submit" class="bg-stone-200 hover:bg-stone-300 text-stone-700 text-xs px-2 py-1 rounded">Update</button>
                                 </form>
                             </td>
                             <td class="p-3 text-center">
-                                <a href="{{ url_for('web_delete_food', item_id=item.S_no) }}" onclick="return confirm('Remove item permanently?');" class="text-rose-600 hover:text-rose-900 text-xs font-bold underline">
-                                    Remove
-                                </a>
+                                <a href="{{ url_for('web_delete_food', item_id=item.S_no) }}" onclick="return confirm('Remove item?');" class="text-rose-600 hover:underline text-xs font-bold">Remove</a>
                             </td>
                         </tr>
                         {% endfor %}
-
-                        <script>
-function filterFoodCatalog() {
-    let input = document.getElementById("foodSearchInput");
-    let filter = input.value.toUpperCase();
-    let table = document.getElementById("foodTable");
-    let tr = table.getElementsByTagName("tr");
-
-    for (let i = 1; i < tr.length; i++) {
-        let td = tr[i].getElementsByTagName("td")[1]; 
-        if (td) {
-            let txtValue = td.textContent || td.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                tr[i].style.display = ""; 
-            } else {
-                tr[i].style.display = "none"; 
-            }
-        }
-    }
-}
-</script>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+function filterFoodCatalog() {
+    let input = document.getElementById("foodSearchInput");
+    let filter = input.value.toUpperCase();
+    let table = document.getElementById("foodTable");
+    let tr = table.getElementsByTagName("tr");
+    for (let i = 1; i < tr.length; i++) {
+        let td = tr[i].getElementsByTagName("td")[1];
+        if (td) {
+            let txtValue = td.textContent || td.innerText;
+            tr[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+        }
+    }
+}
+</script>
 {% endblock %}
