@@ -1,6 +1,4 @@
-cat << 'EOF' > ~/Downloads/foodportal/vercel.json
 {
-  "version": 2,
   "builds": [
     {
       "src": "app.py",
@@ -14,4 +12,3 @@ cat << 'EOF' > ~/Downloads/foodportal/vercel.json
     }
   ]
 }
-EOF
