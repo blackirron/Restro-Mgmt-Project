@@ -25,7 +25,6 @@ def home():
 @app.route('/menu')
 def menu():
     conn = get_db_connection()
-    # Using PyMySQL's DictCursor to match your front-end template expectations
     cursor = conn.cursor(pymysql.cursors.DictCursor)
     cursor.execute("SELECT S_no, Name, Category, Price, Description, Is_Veg FROM item ORDER BY Category, Price")
     items = cursor.fetchall()
