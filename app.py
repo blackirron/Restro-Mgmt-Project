@@ -212,18 +212,21 @@ def web_delete_food(item_id):
     flash("FOOD ITEM DELETED SUCCESSFULLY", "success")
     return redirect(url_for('admin_dashboard'))
 
-@app.route('/remove_order/<int:order_id>', methods=['POST'])
-def remove_order(order_id):
-    if not session.get('admin_logged_in'): return redirect(url_for('admin_login'))
+@app.route('/admin/order/complete/<int:order_id>', methods=['POST'])
+def complete_order(order_id):
     
-    conn = get_db_connection()
+    conn = get_db_connection() 
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM orders WHERE O_id = %s", (order_id,))
-    conn.commit()
-    cursor.close()
-    conn.close()
     
-    flash("ORDER REMOVED SUCCESSFULLY", "success")
+    try:
+        cursor.execute("DELETE FROM orders WHERE O_id = %s", (order_id,))
+        conn.commit()
+    except Exception as e:
+        print(f"Error completing order: {e}")
+    finally:
+        cursor.close()
+        conn.close()
+        
     return redirect(url_for('admin_dashboard'))
 
 @app.route('/admin/logout')
