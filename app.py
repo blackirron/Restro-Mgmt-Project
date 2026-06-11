@@ -1,19 +1,19 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-import mysql.connector
+import pymysql
+import pymysql.cursors
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'fallback_development_key')
 
 def get_db_connection():
-    return mysql.connector.connect(
+    return pymysql.connect(
         host=os.environ.get("DB_HOST"),
         user=os.environ.get("DB_USER"),
         password=os.environ.get("DB_PASSWORD"),
         database=os.environ.get("DB_NAME", "food"),
-        port=int(os.environ.get("DB_PORT", 4000)), 
-        ssl_verify_cert=True,    
-        ssl_verify_identity=True 
+        port=int(os.environ.get("DB_PORT", 4000)),
+        ssl={'ssl': {}} 
     )
 
 # ─────────────────────────── CUSTOMER CONTROLLERS ───────────────────────────
@@ -25,7 +25,8 @@ def home():
 @app.route('/menu')
 def menu():
     conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    # Using PyMySQL's DictCursor to match your front-end template expectations
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
     cursor.execute("SELECT S_no, Name, Category, Price, Description, Is_Veg FROM item ORDER BY Category, Price")
     items = cursor.fetchall()
     cursor.close()
@@ -35,7 +36,7 @@ def menu():
 @app.route('/order/<int:item_id>', methods=['GET', 'POST'])
 def place_order(item_id):
     conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
     
     cursor.execute("SELECT * FROM item WHERE S_no = %s", (item_id,))
     item = cursor.fetchone()
@@ -69,7 +70,7 @@ def order_status():
     if request.method == 'POST':
         phone = request.form['phone']
         conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
         cursor.execute("SELECT F_name, Total, Address FROM orders WHERE P_no = %s", (phone,))
         orders = cursor.fetchall()
         cursor.close()
@@ -125,7 +126,6 @@ def admin_login():
         username = request.form['username']
         password = request.form['password']
         
-        # Securely pull the expected admin credentials from Vercel env variables
         expected_user = os.environ.get('ADMIN_USERNAME', 'admin')
         expected_pass = os.environ.get('ADMIN_PASSWORD')
         
@@ -145,7 +145,7 @@ def admin_dashboard():
         return redirect(url_for('admin_login'))
         
     conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
     
     cursor.execute("SELECT * FROM orders ORDER BY O_id DESC")
     orders = cursor.fetchall()
@@ -219,7 +219,6 @@ def remove_order(order_id):
     
     conn = get_db_connection()
     cursor = conn.cursor()
-    # Safely delete the specific order from the database using its ID
     cursor.execute("DELETE FROM orders WHERE O_id = %s", (order_id,))
     conn.commit()
     cursor.close()
