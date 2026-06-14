@@ -5,10 +5,10 @@
 ![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20Windows-lightgrey)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-> A terminal-based **International Restaurant Management System** built with Python and MySQL.  
+> A no more terminal-based **International Restaurant Management System** built with Python and MySQL.  
 > Automates order management, menu control, and customer feedback — reducing manual work by ~70%.
-foodportal-amber.vercel.app
 
+<i><a href="https://foodportal-amber.vercel.app">Link to web portal</a> </i>
 
 ---
 
