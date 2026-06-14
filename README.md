@@ -7,6 +7,8 @@
 
 > A terminal-based **International Restaurant Management System** built with Python and MySQL.  
 > Automates order management, menu control, and customer feedback — reducing manual work by ~70%.
+foodportal-amber.vercel.app
+
 
 ---
 
